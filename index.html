@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>&lt;csv-preview&gt;</title>
+
+    <!-- Importing Web Component's Polyfill -->
+    <script src="bower_components/platform/platform.js"></script>
+    <script src="bower_components/polymer/polymer.js"></script>
+
+    <!-- Importing Custom Elements -->
+    <link rel="import" href="src/csv-preview.html">
+    <style>
+        .controls {
+            margin: 10px 0 50px 0;
+            display: block;
+        }
+
+        .controls textarea,
+        .controls button {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .controls textarea {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <section class="controls">
+        <textarea cols="50" rows="10"></textarea>
+        <button onclick="document.querySelector('csv-preview').data = document.querySelector('textarea').value">Preview</button>
+    </section>
+
+    <!-- Using Custom Elements -->
+    <csv-preview data=""></csv-preview>
+</body>
+</html>
