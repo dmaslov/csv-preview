@@ -1,11 +1,11 @@
 {
   "name": "csv-preview",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "authors": [
     "Dmitry Maslov <maslov.dmitrij@gmail.com>"
   ],
   "description": "A web component to preview csv data in table",
-  "main": "src/csv-preview.html",
+  "main": "csv-preview.html",
   "keywords": [
     "web-components",
     "polymer",
