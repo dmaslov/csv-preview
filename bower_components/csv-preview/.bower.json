@@ -1,0 +1,35 @@
+{
+  "name": "csv-preview",
+  "version": "0.0.2",
+  "authors": [
+    "Dmitry Maslov <maslov.dmitrij@gmail.com>"
+  ],
+  "description": "A web component to preview csv data in table",
+  "main": "csv-preview.html",
+  "keywords": [
+    "web-components",
+    "polymer",
+    "csv"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/dmaslov/csv-preview",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.3.0"
+  },
+  "_release": "0.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.0.2",
+    "commit": "7a68d33bfc467149b153e1d69f7752d54649fb59"
+  },
+  "_source": "git://github.com/dmaslov/csv-preview.git",
+  "_target": "~0.0.2",
+  "_originalSource": "csv-preview"
+}
