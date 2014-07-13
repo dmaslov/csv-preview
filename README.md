@@ -26,7 +26,7 @@ Install using [Bower](http://bower.io):
 * Import Custom Element:
 
 ```
-<link rel="import" href="bower_components/csv-preview/src/csv-preview.html">
+<link rel="import" href="bower_components/csv-preview/csv-preview.html">
 ```
 
 * Start using it!(need to pass raw csv data somehow into element. Investigate index.html to see exmple)
