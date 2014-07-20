@@ -1,10 +1,10 @@
 {
   "name": "csv-preview",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "authors": [
     "Dmitry Maslov <maslov.dmitrij@gmail.com>"
   ],
-  "description": "A web component to preview csv data in table",
+  "description": "A web component to preview csv data and structured data (array of map) in table format",
   "main": "csv-preview.html",
   "keywords": [
     "web-components",

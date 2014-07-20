@@ -1,6 +1,6 @@
 # &lt;csv-preview&gt;
 
-A [Polymer](http://polymer-project.org) element to preview csv data in table
+A [Polymer](http://polymer-project.org) element to preview csv data and structured data (array of map) in table format
 
 ## Demo
 

@@ -30,6 +30,14 @@
 <body>
     <section class="controls">
         <textarea cols="50" rows="10"></textarea>
+        <!--
+          to put structured data (array of map) need to do something like this
+
+          <script>
+            var structuredData = [ {IRGEX: "1",IRGIM: "18",Summer: "0.82",Winter: "0.82"}, {IRGEX: "1",IRGIM: "33",Summer: "0.28",Winter: "0.28"} ];
+          </script>
+          <button onclick="document.querySelector('csv-preview').data = structuredData;">Preview</button>
+        -->
         <button onclick="document.querySelector('csv-preview').data = document.querySelector('textarea').value">Preview</button>
     </section>
 
