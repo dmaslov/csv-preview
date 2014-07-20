@@ -14,6 +14,6 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#~0.3.0",
-    "csv-preview": "csv-preview#~0.0.2"
+    "csv-preview": "csv-preview#~0.1.0"
   }
 }

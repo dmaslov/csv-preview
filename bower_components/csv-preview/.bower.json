@@ -1,10 +1,10 @@
 {
   "name": "csv-preview",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "authors": [
     "Dmitry Maslov <maslov.dmitrij@gmail.com>"
   ],
-  "description": "A web component to preview csv data in table",
+  "description": "A web component to preview csv data and structured data (array of map) in table format",
   "main": "csv-preview.html",
   "keywords": [
     "web-components",
@@ -23,13 +23,13 @@
   "dependencies": {
     "polymer": "Polymer/polymer#~0.3.0"
   },
-  "_release": "0.0.2",
+  "_release": "0.1.0",
   "_resolution": {
     "type": "version",
-    "tag": "0.0.2",
-    "commit": "7a68d33bfc467149b153e1d69f7752d54649fb59"
+    "tag": "0.1.0",
+    "commit": "61ed5bf9d976edf7835e8fafef1a2e629a33c6a7"
   },
   "_source": "git://github.com/dmaslov/csv-preview.git",
-  "_target": "~0.0.2",
+  "_target": "~0.1.0",
   "_originalSource": "csv-preview"
 }
