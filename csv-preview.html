@@ -32,7 +32,26 @@
             }
         </style>
 
-        <div id="result"></div>
+        <div id="result">
+            <table>
+                <thead>
+                    <tr>
+                        <template repeat="{{label in dataStructure.headArray}}">
+                            <td>{{label}}</td>
+                        </template>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template repeat="{{row in dataStructure.bodyArray}}">
+                        <tr>
+                            <template repeat="{{cell in row}}">
+                                <td>{{cell}}</td>
+                            </template>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
     </template>
     <script>
         Polymer('csv-preview', {
@@ -57,6 +76,7 @@
 
             /* Creates table inner structure and fill it with data */
             renderGrid: function(){
+                /*
                 (this.dataStructure.theadTr).innerHTML = '';
                 (this.dataStructure.tbody).innerHTML = '';
                 (this.dataStructure.headArray).forEach(function(theadValue){
@@ -78,6 +98,7 @@
                     (this.dataStructure.tbody).appendChild(tbodyTr);
 
                 }.bind(this));
+                */
             },
 
             /* Sort table tbody data */
