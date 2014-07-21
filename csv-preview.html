@@ -31,21 +31,11 @@
               text-align: left;
             }
         </style>
-
-        <div id="result"></div>
     </template>
     <script>
         Polymer('csv-preview', {
-            dataStructure: {
-                tbody: undefined,
-                theadTr: undefined,
-                headArray: [],
-                bodyArray: []
-            },
-            $dataTable: undefined,
-            tick: 0,
-
             ready: function(){
+                this.initDataStructure();
                 this.init();
             },
 
@@ -124,6 +114,27 @@
                 }
             },
 
+            /*
+            * Creates empty data structure
+            *
+            * Important: Be careful when initializing properties that are objects or arrays.
+            * Due to the nature of prototype, you may run into unexpected “shared state”
+            * across instances of the same element.
+            * If you’re initializing an array or object, do it in the created callback
+            * rather than directly on the prototype.
+            *
+            */
+            initDataStructure: function(){
+                this.$dataTable = undefined;
+                this.tick = 0;
+                this.dataStructure = {
+                    tbody: undefined,
+                    theadTr: undefined,
+                    headArray: [],
+                    bodyArray: []
+                };
+            },
+
             /* Creates empty table structure*/
             init: function(){
                 if(typeof this.$dataTable === 'undefined'){
@@ -141,7 +152,7 @@
                     this.dataStructure.tbody = tbody;
                     this.dataStructure.theadTr = theadTr;
                     this.$dataTable = table;
-                    (this.$.result).appendChild(this.$dataTable);
+                    this.shadowRoot.appendChild(this.$dataTable);
                 }
 
                 this.initSort();
@@ -204,14 +215,14 @@
                             var rowArray = [];
                             for(key in row) {
                                 if(i==0) {
-                                    this.dataStructure.headArray.push(key); 
+                                    this.dataStructure.headArray.push(key);
                                 }
                                 //this.dataStructure.bodyArray.
                                 //j++;
                                 rowArray.push(row[key]);
                             }
                             this.dataStructure.bodyArray.push(rowArray);
-                            
+
                         }
                     }
                 }
