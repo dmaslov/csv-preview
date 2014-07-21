@@ -1,6 +1,6 @@
 {
   "name": "csv-preview",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "authors": [
     "Dmitry Maslov <maslov.dmitrij@gmail.com>"
   ],
@@ -23,13 +23,13 @@
   "dependencies": {
     "polymer": "Polymer/polymer#~0.3.0"
   },
-  "_release": "0.1.0",
+  "_release": "0.2.0",
   "_resolution": {
     "type": "version",
-    "tag": "0.1.0",
-    "commit": "61ed5bf9d976edf7835e8fafef1a2e629a33c6a7"
+    "tag": "0.2.0",
+    "commit": "d80a20e8170dcd658b132837c384547d76da0e69"
   },
   "_source": "git://github.com/dmaslov/csv-preview.git",
-  "_target": "~0.1.0",
+  "_target": "~0.2.0",
   "_originalSource": "csv-preview"
 }
