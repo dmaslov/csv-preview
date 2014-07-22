@@ -25,89 +25,119 @@
               border: 1px solid #ddd;
             }
 
-            table > thead > tr > th {
+            table > thead > tr > th,
+            table > thead > tr > td {
               vertical-align: bottom;
               border-bottom: 2px solid #ddd;
               text-align: left;
             }
+
+            table > thead > tr > th.asc,
+            table > thead > tr > td.asc {
+                text-decoration: overline;
+            }
+
+            table > thead > tr > th.desc,
+            table > thead > tr > td.desc {
+                text-decoration: underline;
+            }
         </style>
+
+        <table>
+           <thead>
+               <tr>
+                   <template repeat="{{label in dataStructure.headArray}}">
+                       <!-- theadCell variable -->
+                       <th>{{label}}</th>
+                   </template>
+               </tr>
+           </thead>
+           <tbody>
+               <template repeat="{{row in dataStructure.bodyArray}}">
+                   <tr>
+                       <template repeat="{{cell in row}}">
+                           <td>{{cell}}</td>
+                       </template>
+                   </tr>
+               </template>
+           </tbody>
+       </table>
     </template>
     <script>
         Polymer('csv-preview', {
+            theadCell: 'th', // change it to td if needed, don't forget to change it in HTML template
+            sortAscClass: 'asc',
+            sortDescClass: 'desc',
+
             ready: function(){
-                this.initDataStructure();
                 this.init();
+                this.initSort();
             },
 
             dataChanged: function(){
                 if(this.data){
+                    this.clearSortClasses();
                     this.parseData(this.data);
                 }
             },
 
-            /* Creates table inner structure and fill it with data */
-            renderGrid: function(){
-                (this.dataStructure.theadTr).innerHTML = '';
-                (this.dataStructure.tbody).innerHTML = '';
-                (this.dataStructure.headArray).forEach(function(theadValue){
-                    // creates thead inner structure and append data into it
-                    var theadTrTd = document.createElement('th');
-                    theadTrTd.innerHTML = theadValue;
-                    (this.dataStructure.theadTr).appendChild(theadTrTd);
-
-                }.bind(this));
-
-                (this.dataStructure.bodyArray).forEach(function(bodyArrayRow){
-                    // creates tbody inner structure and append data into it
-                    var tbodyTr = document.createElement('tr');
-                    bodyArrayRow.forEach(function(bodyArrayCol){
-                        var tbodyTrTd = document.createElement('td');
-                        tbodyTrTd.innerHTML = bodyArrayCol;
-                        tbodyTr.appendChild(tbodyTrTd);
-                    });
-                    (this.dataStructure.tbody).appendChild(tbodyTr);
-
-                }.bind(this));
-            },
-
-            /* Sort table tbody data */
-            sortTable: function(tbody, colNumber, reverse){
-                var tr = Array.prototype.slice.call(tbody.rows, 0);
+            /* Sort data */
+            sortData: function(colNumber, reverse){
                 reverse = -((+reverse) || -1); // bool to int
 
-                tr = tr.sort(function (a, b){
-                    return reverse * ((a.cells[colNumber].innerHTML).localeCompare(b.cells[colNumber].innerHTML));
+                this.dataStructure.bodyArray.sort(function(a, b){
+                    return reverse * ((a[colNumber]).localeCompare(b[colNumber]));
                 });
+            },
 
-                for(var i = 0; i < tr.length; ++i){
-                    tbody.appendChild(tr[i]);
+            /* Clear asc/desc classes */
+            clearSortClasses: function(){
+              var tHeadTh = this.shadowRoot.querySelectorAll('thead th'),
+                  tHeadThLength = tHeadTh.length;
+
+              if(tHeadThLength){
+                for(var i = 0; i < tHeadThLength; i++){
+                  tHeadTh[i].className = '';
                 }
+              }
             },
 
             /* Init sorting. Add events and find sort order */
             initSort: function(){
+                var tHead = this.shadowRoot.querySelector('thead');
                 var eventCallback = function(node){
                     /* find which cell was clicked */
-                    var i,
-                        childs = node.parentNode.childNodes;
+                    var colNumber,
+                        childs = node.parentNode.querySelectorAll(this.theadCell),
+                        childsLength = childs.length;
 
-                    for(i = 0; i < childs.length; i++){
+                    for(var i = 0; i < childsLength; i++){
                         if(node == childs[i]){
-                            break;
+                            colNumber = i;
                         }
+                        childs[i].className = '';
                     }
-                    this.tick++; // count clicks
-                    this.sortTable(this.dataStructure.tbody, i, this.tick % 2);
+
+                    if(this.clickedColNumber === colNumber){
+                      this.tick = 0;
+                      this.clickedColNumber = null;
+
+                    }else{
+                      this.tick = 1;
+                      this.clickedColNumber = colNumber;
+                    }
+                    node.className = (this.tick % 2) ? this.sortDescClass : this.sortAscClass;
+                    this.sortData(colNumber, this.tick % 2);
                 }.bind(this);
 
                 if(window.addEventListener){
-                    (this.dataStructure.theadTr).addEventListener('click', function(e){
+                    tHead.addEventListener('click', function(e){
                         eventCallback(e.target);
                         e.preventDefault();
                     });
 
                 }else{
-                    (this.dataStructure.theadTr).attachEvent('onclick', function(e){
+                    tHead.attachEvent('onclick', function(e){
                         eventCallback(e.target);
                         e.preventDefault();
                     });
@@ -124,46 +154,36 @@
             * rather than directly on the prototype.
             *
             */
-            initDataStructure: function(){
-                this.$dataTable = undefined;
-                this.tick = 0;
+            init: function(){
+                this.tick = 0; // for sorting
+                this.clickedColNumber = undefined; // for sorting
+
                 this.dataStructure = {
                     tbody: undefined,
                     theadTr: undefined,
                     headArray: [],
                     bodyArray: []
                 };
-            },
 
-            /* Creates empty table structure*/
-            init: function(){
-                if(typeof this.$dataTable === 'undefined'){
-                    var table = document.createElement('table'),
-                        thead = document.createElement('thead'),
-                        theadTr = document.createElement('tr'),
-                        tbody = document.createElement('tbody'),
-                        tfoot = document.createElement('tfoot');
+                var table = document.createElement('table'),
+                    thead = document.createElement('thead'),
+                    theadTr = document.createElement('tr'),
+                    tbody = document.createElement('tbody'),
+                    tfoot = document.createElement('tfoot');
 
-                    thead.appendChild(theadTr);
-                    table.appendChild(thead);
-                    table.appendChild(tbody);
-                    table.appendChild(tfoot);
+                thead.appendChild(theadTr);
+                table.appendChild(thead);
+                table.appendChild(tbody);
+                table.appendChild(tfoot);
 
-                    this.dataStructure.tbody = tbody;
-                    this.dataStructure.theadTr = theadTr;
-                    this.$dataTable = table;
-                    this.shadowRoot.appendChild(this.$dataTable);
-                }
-
-                this.initSort();
+                this.dataStructure.tbody = tbody;
+                this.dataStructure.theadTr = theadTr;
             },
 
             /* Transforms input data to valid table structure */
             parseData: function(input){
                 if(input){
-
                     if(!Array.isArray(input)) {
-
                         var csvRaw = input.split('\n');
                         // remove empty elements
                         var csv = csvRaw.filter(function(el){
@@ -222,11 +242,9 @@
                                 rowArray.push(row[key]);
                             }
                             this.dataStructure.bodyArray.push(rowArray);
-
                         }
                     }
                 }
-                this.renderGrid();
             }
         });
     </script>
