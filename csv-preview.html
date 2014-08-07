@@ -1,251 +1,326 @@
-<polymer-element name="csv-preview" attributes="data">
-    <template>
-        <style>
-            table {
-              max-width: 100%;
-              background-color: transparent;
-              border: 1px solid #ddd;
-              width: 50%;
-              margin: 0 auto;
-              border-collapse: collapse;
-            }
+<polymer-element name="csv-preview" attributes="data caption">
+<template>
+    <style>
+        table {
+            max-width: 100%;
+            background-color: transparent;
+            border: 1px solid #ddd;
+            width: 50%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
 
-            table > thead > tr > th,
-            table > thead > tr > td{
-                background: #f8f0f0;
-                cursor: pointer;
-            }
+        caption {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
 
-            table > thead > tr > th,
-            table > thead > tr > td,
-            table > tbody > tr > td,
-            table > tfoot > tr > td {
-              padding: 8px;
-              vertical-align: top;
-              border: 1px solid #ddd;
-            }
+        table > thead > tr > th,
+        table > thead > tr > td {
+            background: #f8f0f0;
+            cursor: pointer;
+        }
 
-            table > thead > tr > th,
-            table > thead > tr > td {
-              vertical-align: bottom;
-              border-bottom: 2px solid #ddd;
-              text-align: left;
-            }
+        table > thead > tr > th,
+        table > thead > tr > td,
+        table > tbody > tr > td,
+        table > tfoot > tr > td {
+            padding: 1em;
+            vertical-align: top;
+            border: 1px solid #ddd;
+        }
 
-            table > thead > tr > th.asc,
-            table > thead > tr > td.asc {
-                text-decoration: overline;
-            }
+        table > thead > tr > th,
+        table > thead > tr > td {
+            vertical-align: bottom;
+            border-bottom: 2px solid #ddd;
+            text-align: left;
+            white-space: nowrap;
+        }
 
-            table > thead > tr > th.desc,
-            table > thead > tr > td.desc {
-                text-decoration: underline;
-            }
-        </style>
+        table > thead > tr > th > span.icon{
+            margin-left: .3em;
+        }
 
+        table > thead > tr > th.asc > span.icon:after,
+        table > thead > tr > td.asc > span.icon:after {
+            content: "▲";
+        }
+
+        table > thead > tr > th.desc > span.icon:after,
+        table > thead > tr > td.desc > span.icon:after {
+            content: "▼";
+        }
+
+        span.offscreen {
+            position: absolute !important;
+            clip: rect(1px 1px 1px 1px);
+            /* IE6, IE7 */
+            clip: rect(1px, 1px, 1px, 1px);
+        }
+
+    </style>
         <table>
-           <thead>
-               <tr>
-                   <template repeat="{{label in dataStructure.headArray}}">
-                       <!-- theadCell variable -->
-                       <th>{{label}}</th>
-                   </template>
-               </tr>
-           </thead>
-           <tbody>
-               <template repeat="{{row in dataStructure.bodyArray}}">
-                   <tr>
-                       <template repeat="{{cell in row}}">
-                           <td>{{cell}}</td>
-                       </template>
-                   </tr>
-               </template>
-           </tbody>
-       </table>
-    </template>
-    <script>
-        Polymer('csv-preview', {
-            theadCell: 'th', // change it to td if needed, don't forget to change it in HTML template
-            sortAscClass: 'asc',
-            sortDescClass: 'desc',
+            <caption role="status" aria-live="assertive" aria-relevant="all" aria-atomic="true">{{caption}}</caption>
+            <thead>
+            <tr>
+                <template repeat="{{label in dataStructure.headArray}}">
+                    <!-- theadCell variable -->
+                    <th tabindex="0" role="columnheader" scope="col">{{label}}<span class="icon" aria-hidden="true"></span>
+                    </th>
+                </template>
+            </tr>
+            </thead>
+            <tbody>
+            <template repeat="{{row in dataStructure.bodyArray}}">
+                <tr>
+                    <template repeat="{{cell in row}}">
+                        <td>{{cell}}</td>
+                    </template>
+                </tr>
+            </template>
+            </tbody>
+        </table>
+</template>
+<script>
+Polymer('csv-preview', {
+    theadCell: 'th', // change it to td if needed, don't forget to change it in HTML template
+    sortAscClass: 'asc',
+    sortDescClass: 'desc',
+    capSortPre: 'Sorted By',
+    thCellSortPre1: 'Sortable,',
+    thCellSortPre2: 'Sorted',
+    descLabel: 'Descending',
+    ascLabel: 'Ascending',
 
-            ready: function(){
-                this.init();
-                this.initSort();
-            },
+    ready: function () {
+        this.init();
+        this.initSort();
+    },
 
-            dataChanged: function(){
-                if(this.data){
-                    this.clearSortClasses();
-                    this.parseData(this.data);
+    dataChanged: function () {
+        if (this.data) {
+            this.clearSortClasses();
+            this.parseData(this.data);
+        }
+    },
+
+    a11yNotice: function(){
+        var tHeadTh = this.shadowRoot.querySelectorAll('thead th'),
+            tHeadThLength = tHeadTh.length,
+            captionEl = this.shadowRoot.querySelectorAll('table caption')[0];
+
+            console.log(captionEl);
+
+        if (tHeadThLength) {
+            for (var i = 0; i < tHeadThLength; i++) {
+                if(tHeadTh[i].className === this.sortAscClass){
+                    captionEl.innerText = this.originalCaption + ' - ' + this.capSortPre + ' ' + tHeadTh[i].innerText + ' ' + ' ' + this.ascLabel;
                 }
-            },
+                else if(tHeadTh[i].className === this.sortDescClass){
+                    captionEl.innerText = this.originalCaption + ' - ' + this.capSortPre + ' ' + tHeadTh[i].innerText + ' ' + ' ' + this.descLabel;
+                }
+            }
+        }
+    },
 
-            /* Sort data */
-            sortData: function(colNumber, reverse){
-                reverse = -((+reverse) || -1); // bool to int
+    /* Sort data */
+    sortData: function (colNumber, reverse) {
+        reverse = -((+reverse) || -1); // bool to int
 
-                this.dataStructure.bodyArray.sort(function(a, b){
-                    return reverse * ((a[colNumber]).localeCompare(b[colNumber]));
+        this.dataStructure.bodyArray.sort(function (a, b) {
+            return reverse * ((a[colNumber]).localeCompare(b[colNumber]));
+        });
+
+        this.a11yNotice();
+    },
+
+    /* Clear asc/desc classes and the aria-sort attribute */
+    clearSortClasses: function () {
+        var tHeadTh = this.shadowRoot.querySelectorAll('thead th'),
+            tHeadThLength = tHeadTh.length;
+
+        if (tHeadThLength) {
+            for (var i = 0; i < tHeadThLength; i++) {
+               tHeadTh[i].className = '';
+               tHeadTh[i].removeAttribute('aria-sort');
+            }
+        }
+    },
+
+    /* Init sorting. Add events and find sort order */
+    initSort: function () {
+        var tHead = this.shadowRoot.querySelector('thead');
+
+        var eventCallback = function (node) {
+            /* find which cell was clicked */
+            var colNumber,
+                childs = node.parentNode.querySelectorAll(this.theadCell),
+                childsLength = childs.length;
+
+            for (var i = 0; i < childsLength; i++) {
+                if (node == childs[i]) {
+                    colNumber = i;
+                }
+                childs[i].className = '';
+                childs[i].removeAttribute('aria-sort');
+            }
+
+            if (this.clickedColNumber === colNumber) {
+                this.tick = 0;
+                this.clickedColNumber = null;
+            } else {
+                this.tick = 1;
+                this.clickedColNumber = colNumber;
+            }
+
+            node.className = (this.tick % 2) ? this.sortDescClass : this.sortAscClass;
+            if (node.className === this.sortAscClass) {
+                node.setAttribute("aria-sort", "ascending");
+            }
+            else if (node.className === this.sortDescClass) {
+                node.setAttribute("aria-sort", "descending");
+            }
+
+            this.sortData(colNumber, this.tick % 2);
+        }.bind(this);
+
+        if (window.addEventListener) {
+            tHead.addEventListener('click', function (e) {
+                eventCallback(e.target);
+                e.preventDefault();
+            });
+
+            tHead.addEventListener('keydown', function (e) {
+                var code = e.charCode || e.keyCode;
+                if ((code === 32) || (code === 13)) {
+                    eventCallback(e.target);
+                    e.preventDefault();
+                }
+            });
+
+        } else {
+            tHead.attachEvent('onclick', function (e) {
+                eventCallback(e.target);
+                e.preventDefault();
+            });
+
+            tHead.attachEvent('keydown', function (e) {
+                var code = e.charCode || e.keyCode;
+                if ((code === 32) || (code === 13)) {
+                    eventCallback(e.target);
+                    e.preventDefault();
+                }
+            });
+        }
+    },
+
+    /*
+     * Creates empty data structure
+     *
+     * Important: Be careful when initializing properties that are objects or arrays.
+     * Due to the nature of prototype, you may run into unexpected “shared state”
+     * across instances of the same element.
+     * If you’re initializing an array or object, do it in the created callback
+     * rather than directly on the prototype.
+     *
+     */
+    init: function () {
+        this.tick = 0; // for sorting
+        this.clickedColNumber = undefined; // for sorting
+
+        // store this value for use later
+        this.originalCaption = this.caption;
+
+        this.dataStructure = {
+            tbody: undefined,
+            theadTr: undefined,
+            headArray: [],
+            bodyArray: []
+        };
+
+        var table = document.createElement('table'),
+                thead = document.createElement('thead'),
+                theadTr = document.createElement('tr'),
+                tbody = document.createElement('tbody'),
+                tfoot = document.createElement('tfoot');
+
+
+        thead.appendChild(theadTr);
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        table.appendChild(tfoot);
+
+        this.dataStructure.tbody = tbody;
+        this.dataStructure.theadTr = theadTr;
+    },
+
+    /* Transforms input data to valid table structure */
+    parseData: function (input) {
+        if (input) {
+            if (!Array.isArray(input)) {
+                var csvRaw = input.split('\n');
+                // remove empty elements
+                var csv = csvRaw.filter(function (el) {
+                    return !!el;
                 });
-            },
 
-            /* Clear asc/desc classes */
-            clearSortClasses: function(){
-              var tHeadTh = this.shadowRoot.querySelectorAll('thead th'),
-                  tHeadThLength = tHeadTh.length;
+                var csvLength = csv.length;
+                if (csvLength > 1) {
+                    this.dataStructure.headArray = csv[0].split(',');
+                    this.dataStructure.bodyArray = [];
+                    var rowsCnt = csvLength - 1;
+                    var colsCnt = this.dataStructure.headArray.length;
 
-              if(tHeadThLength){
-                for(var i = 0; i < tHeadThLength; i++){
-                  tHeadTh[i].className = '';
-                }
-              }
-            },
-
-            /* Init sorting. Add events and find sort order */
-            initSort: function(){
-                var tHead = this.shadowRoot.querySelector('thead');
-                var eventCallback = function(node){
-                    /* find which cell was clicked */
-                    var colNumber,
-                        childs = node.parentNode.querySelectorAll(this.theadCell),
-                        childsLength = childs.length;
-
-                    for(var i = 0; i < childsLength; i++){
-                        if(node == childs[i]){
-                            colNumber = i;
-                        }
-                        childs[i].className = '';
-                    }
-
-                    if(this.clickedColNumber === colNumber){
-                      this.tick = 0;
-                      this.clickedColNumber = null;
-
-                    }else{
-                      this.tick = 1;
-                      this.clickedColNumber = colNumber;
-                    }
-                    node.className = (this.tick % 2) ? this.sortDescClass : this.sortAscClass;
-                    this.sortData(colNumber, this.tick % 2);
-                }.bind(this);
-
-                if(window.addEventListener){
-                    tHead.addEventListener('click', function(e){
-                        eventCallback(e.target);
-                        e.preventDefault();
-                    });
-
-                }else{
-                    tHead.attachEvent('onclick', function(e){
-                        eventCallback(e.target);
-                        e.preventDefault();
-                    });
-                }
-            },
-
-            /*
-            * Creates empty data structure
-            *
-            * Important: Be careful when initializing properties that are objects or arrays.
-            * Due to the nature of prototype, you may run into unexpected “shared state”
-            * across instances of the same element.
-            * If you’re initializing an array or object, do it in the created callback
-            * rather than directly on the prototype.
-            *
-            */
-            init: function(){
-                this.tick = 0; // for sorting
-                this.clickedColNumber = undefined; // for sorting
-
-                this.dataStructure = {
-                    tbody: undefined,
-                    theadTr: undefined,
-                    headArray: [],
-                    bodyArray: []
-                };
-
-                var table = document.createElement('table'),
-                    thead = document.createElement('thead'),
-                    theadTr = document.createElement('tr'),
-                    tbody = document.createElement('tbody'),
-                    tfoot = document.createElement('tfoot');
-
-                thead.appendChild(theadTr);
-                table.appendChild(thead);
-                table.appendChild(tbody);
-                table.appendChild(tfoot);
-
-                this.dataStructure.tbody = tbody;
-                this.dataStructure.theadTr = theadTr;
-            },
-
-            /* Transforms input data to valid table structure */
-            parseData: function(input){
-                if(input){
-                    if(!Array.isArray(input)) {
-                        var csvRaw = input.split('\n');
-                        // remove empty elements
-                        var csv = csvRaw.filter(function(el){
-                            return !!el;
-                        });
-
-                        var csvLength = csv.length;
-                        if(csvLength > 1){
-                            this.dataStructure.headArray = csv[0].split(',');
-                            this.dataStructure.bodyArray = [];
-                            var rowsCnt = csvLength - 1;
-                            var colsCnt = this.dataStructure.headArray.length;
-
-                            for(var i = 1; i <= rowsCnt; i++){
-                                this.dataStructure.bodyArray[i] = csv[i].split(',');
-                                if(this.dataStructure.bodyArray[i].length < colsCnt){
-                                    // fill cells with empty strings if thead has more cols than tbody
-                                    for(var j = this.dataStructure.bodyArray[i].length; j < colsCnt; j++){
-                                        this.dataStructure.bodyArray[i][j] = '';
-                                    }
-                                }
-                                else{
-                                    // cut extra cells if tbody has more cols than thead
-                                    this.dataStructure.bodyArray[i].length = colsCnt;
-                                }
+                    for (var i = 1; i <= rowsCnt; i++) {
+                        this.dataStructure.bodyArray[i] = csv[i].split(',');
+                        if (this.dataStructure.bodyArray[i].length < colsCnt) {
+                            // fill cells with empty strings if thead has more cols than tbody
+                            for (var j = this.dataStructure.bodyArray[i].length; j < colsCnt; j++) {
+                                this.dataStructure.bodyArray[i][j] = '';
                             }
                         }
-                    }
-                    else {
-                        /*
-                         for array in the format of d3.js parsed csv (array of maps):
-                        0: Object
-                            IRGEX: "1"
-                            IRGIM: "18"
-                            Summer: "0.82"
-                            Winter: "0.82"
-                        1: Object
-                            IRGEX: "1"
-                            IRGIM: "33"
-                            Summer: "0.28"
-                            Winter: "0.28"
-                            etc.
-                        */
-                        this.dataStructure.bodyArray = [];
-                        this.dataStructure.headArray = [];
-                        for(i in input) {
-                            var row = input[i];
-                            //var j = 0;
-                            var rowArray = [];
-                            for(key in row) {
-                                if(i==0) {
-                                    this.dataStructure.headArray.push(key);
-                                }
-                                //this.dataStructure.bodyArray.
-                                //j++;
-                                rowArray.push(row[key]);
-                            }
-                            this.dataStructure.bodyArray.push(rowArray);
+                        else {
+                            // cut extra cells if tbody has more cols than thead
+                            this.dataStructure.bodyArray[i].length = colsCnt;
                         }
                     }
                 }
             }
-        });
-    </script>
+            else {
+                /*
+                 for array in the format of d3.js parsed csv (array of maps):
+                 0: Object
+                 IRGEX: "1"
+                 IRGIM: "18"
+                 Summer: "0.82"
+                 Winter: "0.82"
+                 1: Object
+                 IRGEX: "1"
+                 IRGIM: "33"
+                 Summer: "0.28"
+                 Winter: "0.28"
+                 etc.
+                 */
+                this.dataStructure.bodyArray = [];
+                this.dataStructure.headArray = [];
+                for (i in input) {
+                    var row = input[i];
+                    //var j = 0;
+                    var rowArray = [];
+                    for (key in row) {
+                        if (i == 0) {
+                            this.dataStructure.headArray.push(key);
+                        }
+                        //this.dataStructure.bodyArray.
+                        //j++;
+                        rowArray.push(row[key]);
+                    }
+                    this.dataStructure.bodyArray.push(rowArray);
+                }
+            }
+        }
+    }
+});
+</script>
 </polymer-element>

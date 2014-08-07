@@ -1,0 +1,9 @@
+.project
+.settings
+*~
+.DS_Store
+.idea
+package
+.settings
+atlassian-ide-plugin.xml
+bower_components
