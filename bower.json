@@ -15,8 +15,6 @@
   "homepage": "https://github.com/dmaslov/csv-preview",
   "ignore": [
     "**/.*",
-    "node_modules",
-    "bower_components",
     "test",
     "tests"
   ],
