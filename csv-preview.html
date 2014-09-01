@@ -1,70 +1,81 @@
 <polymer-element name="csv-preview" attributes="data">
     <template>
-        <style>
-            table {
-              max-width: 100%;
-              background-color: transparent;
-              border: 1px solid #ddd;
-              width: 50%;
-              margin: 0 auto;
-              border-collapse: collapse;
-            }
+      <style>
+        table {
+          max-width: 100%;
+          background-color: transparent;
+          border: 1px solid #ddd;
+          width: 50%;
+          margin: 0 auto;
+          border-collapse: collapse;
+        }
 
-            table > thead > tr > th,
-            table > thead > tr > td{
-                background: #f8f0f0;
-                cursor: pointer;
-            }
+        table > thead > tr > th,
+        table > thead > tr > td{
+          background: #f8f0f0;
+          cursor: pointer;
+        }
 
-            table > thead > tr > th,
-            table > thead > tr > td,
-            table > tbody > tr > td,
-            table > tfoot > tr > td {
-              padding: 8px;
-              vertical-align: top;
-              border: 1px solid #ddd;
-            }
+        table > thead > tr > th,
+        table > thead > tr > td,
+        table > tbody > tr > td,
+        table > tfoot > tr > td {
+          padding: 8px;
+          vertical-align: top;
+          border: 1px solid #ddd;
+        }
 
-            table > thead > tr > th,
-            table > thead > tr > td {
-              vertical-align: bottom;
-              border-bottom: 2px solid #ddd;
-              text-align: left;
-            }
+        table > thead > tr > th,
+        table > thead > tr > td {
+          vertical-align: bottom;
+          border-bottom: 2px solid #ddd;
+          text-align: left;
 
-            table > thead > tr > th.asc,
-            table > thead > tr > td.asc {
-                text-decoration: overline;
-            }
+          /* prevent select text when doubleclick */
+          -webkit-user-select: none;
+           -khtml-user-select: none;
+             -moz-user-select: -moz-none;
+               -o-user-select: none;
+                  user-select: none;
+        }
 
-            table > thead > tr > th.desc,
-            table > thead > tr > td.desc {
-                text-decoration: underline;
-            }
-        </style>
+        table > thead > tr > th::after,
+        table > thead > tr > td::after {
+          content: '▼▲';
+          font-size: 10px;
+          margin-left: 5px;
+        }
 
-        <table>
-           <thead>
-               <tr>
-                   <template repeat="{{label in dataStructure.headArray}}">
-                       <!-- theadCell variable -->
-                       <th>{{label}}</th>
-                   </template>
-               </tr>
-           </thead>
-           <tbody>
-               <template repeat="{{row in dataStructure.bodyArray}}">
-                   <tr>
-                       <template repeat="{{cell in row}}">
-                           <td>{{cell}}</td>
-                       </template>
-                   </tr>
-               </template>
-           </tbody>
-       </table>
+        table > thead > tr > th.asc::after,
+        table > thead > tr > td.asc::after {
+          content: '▲';
+          font-size: 10px;
+          margin-left: 5px;
+        }
+
+        table > thead > tr > th.desc::after,
+        table > thead > tr > td.desc::after {
+            content: '▼';
+            font-size: 10px;
+            margin-left: 5px;
+        }
+      </style>
+
+      <table>
+        <thead>
+          <tr>
+            <th template repeat="{{label in dataStructure.headArray}}">{{label}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr template repeat="{{row in dataStructure.bodyArray}}">
+            <td template repeat="{{cell in row}}">{{cell}}</td>
+          </tr>
+        </tbody>
+      </table>
     </template>
     <script>
-        Polymer('csv-preview', {
+        Polymer({
             theadCell: 'th', // change it to td if needed, don't forget to change it in HTML template
             sortAscClass: 'asc',
             sortDescClass: 'desc',
