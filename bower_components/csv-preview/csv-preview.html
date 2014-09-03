@@ -1,4 +1,4 @@
-<polymer-element name="csv-preview" attributes="data">
+<polymer-element name="csv-preview" attributes="data, separator">
     <template>
       <style>
         table {
@@ -83,6 +83,7 @@
             ready: function(){
                 this.init();
                 this.initSort();
+                this.separator = this.separator || ',';
             },
 
             dataChanged: function(){
@@ -203,13 +204,13 @@
 
                         var csvLength = csv.length;
                         if(csvLength > 1){
-                            this.dataStructure.headArray = csv[0].split(',');
+                            this.dataStructure.headArray = csv[0].split(this.separator);
                             this.dataStructure.bodyArray = [];
                             var rowsCnt = csvLength - 1;
                             var colsCnt = this.dataStructure.headArray.length;
 
                             for(var i = 1; i <= rowsCnt; i++){
-                                this.dataStructure.bodyArray[i] = csv[i].split(',');
+                                this.dataStructure.bodyArray[i] = csv[i].split(this.separator);
                                 if(this.dataStructure.bodyArray[i].length < colsCnt){
                                     // fill cells with empty strings if thead has more cols than tbody
                                     for(var j = this.dataStructure.bodyArray[i].length; j < colsCnt; j++){
