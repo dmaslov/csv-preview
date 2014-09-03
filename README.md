@@ -31,15 +31,18 @@ Install using [Bower](http://bower.io):
 
 * Start using it!(need to pass raw csv data somehow into element. Investigate index.html to see exmple)
 
+* If column separator of csv data is not comma, pass it in `separator` attribute. The `separator` attribute is not required, you may remove it if column delimeter is comma (by default)
+
 ```
-<csv-preview data=""></csv-preview>
+<csv-preview data="" separator=""></csv-preview>
 ```
 
 ## Options
 
 Attribute  | Options                   | Default             | Description
 ---        | ---                       | ---                 | ---
-`data`      | *string*                  | ``                  | raw csv data (comma delimied)
+`data`      | *string*                  | ``                  | raw csv data (comma delimied by default)
+`separator`      | *string*                  | `,`                  | column separator (",", ";", etc)
 
 
 ## License
