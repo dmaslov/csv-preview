@@ -13,7 +13,6 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#0.4.1",
-    "csv-preview": "csv-preview#1.2.1"
+    "csv-preview": "csv-preview#1.2.2"
   }
 }

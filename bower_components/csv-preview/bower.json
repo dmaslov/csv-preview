@@ -1,6 +1,6 @@
 {
   "name": "csv-preview",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "authors": [
     "Dmitry Maslov <maslov.dmitrij@gmail.com>"
   ],
@@ -21,6 +21,6 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#0.4.1"
+    "polymer": "Polymer/polymer#^0.5.0"
   }
 }
