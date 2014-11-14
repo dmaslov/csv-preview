@@ -16,16 +16,10 @@ Install using [Bower](http://bower.io):
 
 ## Usage
 
-* Import Web Components' polyfill:
-
-```
-<script src="bower_components/platform/platform.js"></script>
-<script src="bower_components/polymer/polymer.js"></script>
-```
-
 * Import Custom Element:
 
 ```
+<link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/csv-preview/csv-preview.html">
 ```
 
