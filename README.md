@@ -1,4 +1,4 @@
-# &lt;csv-preview&gt;
+# &lt;csv-preview&gt; [![Build Status](https://travis-ci.org/dmaslov/csv-preview.svg?branch=master)](https://travis-ci.org/dmaslov/csv-preview)
 
 A [Polymer](http://polymer-project.org) element to preview csv data and structured data (array of map) in table format
 
@@ -19,7 +19,6 @@ Install using [Bower](http://bower.io):
 * Import Custom Element:
 
 ```
-<link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/csv-preview/csv-preview.html">
 ```
 
@@ -38,6 +37,13 @@ Attribute  | Options                   | Default             | Description
 `data`      | *string*                  | ``                  | raw csv data (comma delimied by default)
 `separator`      | *string*                  | `,`                  | column separator (",", ";", etc)
 
+
+## Tests
+
+```shell
+npm install -g web-component-tester
+wct
+```
 
 ## License
 
