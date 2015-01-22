@@ -16,6 +16,12 @@ Install using [Bower](http://bower.io):
 
 ## Usage
 
+* Import Polyfill Web Components support for older browsers:
+
+```
+<script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+```
+
 * Import Custom Element:
 
 ```
