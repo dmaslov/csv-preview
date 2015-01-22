@@ -1,6 +1,6 @@
 {
   "name": "csv-preview",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "authors": [
     "Dmitry Maslov <maslov.dmitrij@gmail.com>"
   ],
@@ -17,10 +17,13 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "wct.config.js",
+    ".travis.yml"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.0"
+    "polymer": "Polymer/polymer#^0.5.2"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.0.5"
   }
 }

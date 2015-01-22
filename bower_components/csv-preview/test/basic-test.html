@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../csv-preview.html">
+</head>
+<body>
+<csv-preview data="" separator=""></csv-preview>
+
+<script>
+  var csvPreview,
+      csvData,
+      csvRowsCnt,
+      csvColsCnt,
+      d3Data,
+      d3RowsCnt,
+      d3ColsCnt;
+
+  describe('<csv-preview>', function() {
+    before(function(){
+      csvPreview = document.querySelector('csv-preview');
+      csvData = 'id,first_name,last_name,email,country,ip_address\n1,Deborah,Sullivan,dsullivan@gevee.info,Palau,208.192.230.239\n2,Peter,Hall,phall@browsecat.com,Grenada,142.18.223.26\n3,Kathryn,Fields,kfields@twimbo.gov,Angola,85.147.94.206';
+
+      var csv = csvData.split('\n');
+      csvRowsCnt = csv.length - 1;
+      csvColsCnt = csv[0].split(',').length;
+
+      d3Data = [
+        {
+          IRGEX: "1",
+          IRGIM: "18",
+          Summer: "0.82",
+          Winter: "0.82",
+        },
+        {
+          IRGEX: "1",
+          IRGIM: "33",
+          Summer: "0.28",
+          Winter: "0.28"
+        }
+      ];
+
+      d3RowsCnt = d3Data.length;
+      d3ColsCnt = Object.keys(d3Data[0]).length;
+    });
+
+    afterEach(function(done){
+      csvPreview.data = '';
+      done();
+    });
+
+    function _testData(done, type){
+      var dataType    = type === 'csv' ? csvData    : d3Data,
+          dataRowsCnt = type === 'csv' ? csvRowsCnt : d3RowsCnt,
+          dataColsCnt = type === 'csv' ? csvColsCnt : d3ColsCnt;
+
+      flush(function(){
+        expect(csvPreview.data).to.be.equal(dataType);
+
+        expect(csvPreview.dataStructure.headArray).not.to.be.empty;
+        expect(csvPreview.dataStructure.headArray.length).to.be.equal(dataColsCnt);
+        expect(csvPreview.shadowRoot.querySelectorAll('thead > tr > th').length).to.be.equal(dataColsCnt);
+
+        expect(csvPreview.dataStructure.bodyArray).not.to.be.empty;
+        expect(csvPreview.dataStructure.bodyArray.length).to.be.equal(dataRowsCnt);
+        expect(csvPreview.shadowRoot.querySelectorAll('tbody > tr').length).to.be.equal(dataRowsCnt);
+
+        expect(csvPreview.dataStructure.tbody).not.to.be.empty;
+        expect(csvPreview.dataStructure.theadTr).not.to.be.empty;
+
+        done();
+      });
+    }
+
+    it('should init correctly without data', function(done){
+      flush(function(){
+        //expect(csvPreview.shadowRoot.querySelector('style')).not.to.be.empty; //falls in FF34
+        expect(csvPreview.shadowRoot.querySelector('table')).not.to.be.empty;
+        expect(csvPreview.separator).to.be.equal(',');
+
+        expect(csvPreview.data).to.be.empty;
+        expect(csvPreview.dataStructure.headArray).to.be.empty;
+        expect(csvPreview.dataStructure.bodyArray).to.be.empty;
+
+        expect(csvPreview.dataStructure.tbody).to.be.an('object');
+        expect(csvPreview.dataStructure.theadTr).to.be.an('object');
+
+        done();
+      });
+    });
+
+    it('should display csv data if "data" attribute changed', function(done){
+      csvPreview.data = csvData;
+      _testData(done, 'csv');
+    });
+
+    it('should display d3.js parsed csv data', function(done){
+      csvPreview.data = d3Data;
+      _testData(done, 'd3');
+    });
+
+    it('should sort data', function(done){
+      csvPreview.data = csvData;
+      flush(function(){
+        var clickTarget = csvPreview.shadowRoot.querySelector('thead > tr > ' + csvPreview.theadCell),
+            firstRowFirstCellVal = csvPreview.dataStructure.bodyArray[0][0],
+            lastRowFirstCellVal = csvPreview.dataStructure.bodyArray[csvRowsCnt - 1][0];
+
+        //first click
+        clickTarget.click.apply(clickTarget);
+        flush(function(){
+          var firstRowFirstCellHtml = csvPreview.shadowRoot.querySelector('tbody > tr > td').innerHTML;
+
+          expect(clickTarget.className).to.be.equal(csvPreview.sortDescClass);
+          expect(csvPreview.dataStructure.bodyArray[0][0]).to.be.equal(lastRowFirstCellVal);
+          expect(csvPreview.dataStructure.bodyArray[csvRowsCnt - 1][0]).to.be.equal(firstRowFirstCellVal);
+          expect(firstRowFirstCellHtml).to.be.equal(lastRowFirstCellVal);
+
+          //second click
+          clickTarget.click.apply(clickTarget);
+          flush(function(){
+            var firstRowFirstCellHtml = csvPreview.shadowRoot.querySelector('tbody > tr > td').innerHTML;
+
+            expect(clickTarget.className).to.be.equal(csvPreview.sortAscClass);
+            expect(csvPreview.dataStructure.bodyArray[0][0]).to.be.equal(firstRowFirstCellVal);
+            expect(csvPreview.dataStructure.bodyArray[csvRowsCnt - 1][0]).to.be.equal(lastRowFirstCellVal);
+            expect(firstRowFirstCellHtml).to.be.equal(firstRowFirstCellVal);
+
+            done();
+          });
+        });
+      });
+    });
+  });
+</script>
+</body>
+</html>

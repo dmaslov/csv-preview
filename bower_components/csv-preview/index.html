@@ -1,44 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>&lt;csv-preview&gt;</title>
+  <meta charset="UTF-8">
+  <title>&lt;csv-preview&gt;</title>
 
-    <!-- Importing Custom Elements -->
-    <link rel="import" href="polymer.html">
-    <link rel="import" href="csv-preview.html">
-    <style>
-        .controls {
-            margin: 10px 0 50px 0;
-            display: block;
-        }
+  <!-- Polyfill Web Components support -->
+  <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
 
-        .controls textarea,
-        .controls button {
-            display: block;
-            margin: 0 auto;
-        }
+  <!-- Importing Custom Element -->
+  <link rel="import" href="csv-preview.html">
+  <style>
+    .controls {
+      margin: 10px 0 50px 0;
+      display: block;
+    }
 
-        .controls textarea {
-            margin-bottom: 5px;
-        }
-    </style>
+    .controls textarea,
+    .controls button {
+      display: block;
+      margin: 0 auto;
+    }
+
+    .controls textarea {
+      margin-bottom: 5px;
+    }
+  </style>
 </head>
 <body>
-    <section class="controls">
-        <textarea cols="50" rows="10"></textarea>
-        <!--
-          to put structured data (array of map) need to do something like this
+<section class="controls">
+  <textarea cols="50" rows="10"></textarea>
+  <!--
+    to put structured data (array of map) need to do something like this
 
-          <script>
-            var structuredData = [ {IRGEX: "1",IRGIM: "18",Summer: "0.82",Winter: "0.82"}, {IRGEX: "1",IRGIM: "33",Summer: "0.28",Winter: "0.28"} ];
-          </script>
-          <button onclick="document.querySelector('csv-preview').data = structuredData;">Preview</button>
-        -->
-        <button onclick="document.querySelector('csv-preview').data = document.querySelector('textarea').value">Preview</button>
-    </section>
+    <script>
+      var structuredData = [ {IRGEX: "1",IRGIM: "18",Summer: "0.82",Winter: "0.82"}, {IRGEX: "1",IRGIM: "33",Summer: "0.28",Winter: "0.28"} ];
+    </script>
+    <button onclick="document.querySelector('csv-preview').data = structuredData;">Preview</button>
+  -->
+  <button onclick="document.querySelector('csv-preview').data = document.querySelector('textarea').value">Preview
+  </button>
+</section>
 
-    <!-- Using Custom Elements -->
-    <csv-preview data="" separator=""></csv-preview>
+<!-- Using Custom Elements -->
+<csv-preview data="" separator=""></csv-preview>
 </body>
 </html>

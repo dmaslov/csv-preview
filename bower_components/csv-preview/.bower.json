@@ -1,6 +1,6 @@
 {
   "name": "csv-preview",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "authors": [
     "Dmitry Maslov <maslov.dmitrij@gmail.com>"
   ],
@@ -17,19 +17,22 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "wct.config.js",
+    ".travis.yml"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.0"
+    "polymer": "Polymer/polymer#^0.5.2"
   },
-  "_release": "1.2.2",
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.0.5"
+  },
+  "_release": "1.2.3",
   "_resolution": {
     "type": "version",
-    "tag": "1.2.2",
-    "commit": "ff8c2ff54342593566137123c85275ff934e7bda"
+    "tag": "1.2.3",
+    "commit": "9bc4ced598c7d79fe6228f7410da2349e56fdc88"
   },
   "_source": "git://github.com/dmaslov/csv-preview.git",
-  "_target": "1.2.2",
+  "_target": "1.2.3",
   "_originalSource": "csv-preview"
 }
