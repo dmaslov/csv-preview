@@ -1,6 +1,6 @@
 {
   "name": "csv-preview",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "authors": [
     "Dmitry Maslov <maslov.dmitrij@gmail.com>"
   ],
@@ -21,18 +21,18 @@
     ".travis.yml"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.3"
+    "polymer": "Polymer/polymer#^0.5.4"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^2.0.5"
   },
-  "_release": "1.2.4",
+  "_release": "1.2.5",
   "_resolution": {
     "type": "version",
-    "tag": "1.2.4",
-    "commit": "3a314c0e2670b48acd8235c9df21b46da924c3ba"
+    "tag": "1.2.5",
+    "commit": "16faed2393f50fe0aa3192b72da753def7ddbf81"
   },
   "_source": "git://github.com/dmaslov/csv-preview.git",
-  "_target": "1.2.4",
+  "_target": "1.2.5",
   "_originalSource": "csv-preview"
 }

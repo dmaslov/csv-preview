@@ -1,6 +1,6 @@
 {
   "name": "csv-preview",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "authors": [
     "Dmitry Maslov <maslov.dmitrij@gmail.com>"
   ],
@@ -21,7 +21,7 @@
     ".travis.yml"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.3"
+    "polymer": "Polymer/polymer#^0.5.4"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^2.0.5"

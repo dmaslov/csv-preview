@@ -13,6 +13,6 @@
     "tests"
   ],
   "dependencies": {
-    "csv-preview": "csv-preview#1.2.4"
+    "csv-preview": "csv-preview#1.2.5"
   }
 }
