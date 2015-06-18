@@ -5,7 +5,7 @@
   <title>&lt;csv-preview&gt;</title>
 
   <!-- Polyfill Web Components support -->
-  <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../webcomponentsjs/webcomponents-lite.min.js"></script>
 
   <!-- Importing Custom Element -->
   <link rel="import" href="csv-preview.html">
@@ -37,8 +37,7 @@
     </script>
     <button onclick="document.querySelector('csv-preview').data = structuredData;">Preview</button>
   -->
-  <button onclick="document.querySelector('csv-preview').data = document.querySelector('textarea').value">Preview
-  </button>
+  <button onclick="document.querySelector('csv-preview').data = document.querySelector('textarea').value">Preview</button>
 </section>
 
 <!-- Using Custom Elements -->

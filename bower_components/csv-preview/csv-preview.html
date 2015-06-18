@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<polymer-element name="csv-preview" attributes="data, separator">
+<dom-module id="csv-preview">
   <template>
     <style>
       table {
@@ -66,201 +66,208 @@
     <table>
       <thead>
       <tr>
-        <th template repeat="{{label in dataStructure.headArray}}">{{label}}</th>
+        <template is="dom-repeat" items="{{tableHead}}" as="label">
+          <th>{{label}}</th>
+        </template>
       </tr>
       </thead>
       <tbody>
-      <tr template repeat="{{row in dataStructure.bodyArray}}">
-        <td template repeat="{{cell in row}}">{{cell}}</td>
-      </tr>
+        <template is="dom-repeat" items="{{tableBody}}" as="row">
+          <tr>
+            <template is="dom-repeat" items="{{row}}" as="cell">
+              <td>{{cell}}</td>
+            </template>
+          </tr>
+        </template>
       </tbody>
     </table>
   </template>
-  <script>
-    Polymer({
-      theadCell: 'th', // change it to td if needed, don't forget to change it in HTML template
-      sortAscClass: 'asc',
-      sortDescClass: 'desc',
-
-      ready: function() {
-        this.init();
-        this.initSort();
-        this.separator = this.separator || ',';
+</dom-module>
+<script>
+  Polymer({
+    is: 'csv-preview',
+    properties: {
+      theadCell: {
+        type: String,
+        value: 'th'
       },
-
-      dataChanged: function() {
-        if(this.data) {
-          this.clearSortClasses();
-          this.parseData(this.data);
-        }
+      sortAscClass: {
+        type: 'string',
+        value: 'asc'
       },
-
-      /* Sort data */
-      sortData: function(colNumber, reverse) {
-        reverse = -((+reverse) || -1); // bool to int
-
-        this.dataStructure.bodyArray.sort(function(a, b) {
-          return reverse * ((a[colNumber]).localeCompare(b[colNumber]));
-        });
+      sortDescClass: {
+        type: String,
+        value: 'desc'
       },
-
-      /* Clear asc/desc classes */
-      clearSortClasses: function() {
-        var tHeadTh = this.shadowRoot.querySelectorAll('thead th'),
-          tHeadThLength = tHeadTh.length;
-
-        if(tHeadThLength) {
-          for(var i = 0; i < tHeadThLength; i++) {
-            tHeadTh[i].className = '';
-          }
-        }
+      data: {
+        type: String,
+        value: null,
+        observer: 'dataChanged'
       },
-
-      /* Init sorting. Add events and find sort order */
-      initSort: function() {
-        var tHead = this.shadowRoot.querySelector('thead');
-        var eventCallback = function(node) {
-          /* find which cell was clicked */
-          var colNumber,
-            childs = node.parentNode.querySelectorAll(this.theadCell),
-            childsLength = childs.length;
-
-          for(var i = 0; i < childsLength; i++) {
-            if(node == childs[i]) {
-              colNumber = i;
-            }
-            childs[i].className = '';
-          }
-
-          if(this.clickedColNumber === colNumber) {
-            this.tick = 0;
-            this.clickedColNumber = null;
-
-          } else {
-            this.tick = 1;
-            this.clickedColNumber = colNumber;
-          }
-          node.className = (this.tick % 2) ? this.sortDescClass : this.sortAscClass;
-          this.sortData(colNumber, this.tick % 2);
-        }.bind(this);
-
-        if(window.addEventListener) {
-          tHead.addEventListener('click', function(e) {
-            eventCallback(e.target);
-            e.preventDefault();
-          });
-
-        } else {
-          tHead.attachEvent('onclick', function(e) {
-            eventCallback(e.target);
-            e.preventDefault();
-          });
-        }
+      separator: {
+        type: String,
+        value: ','
       },
-
-      /*
-       * Creates empty data structure
-       *
-       * Important: Be careful when initializing properties that are objects or arrays.
-       * Due to the nature of prototype, you may run into unexpected “shared state”
-       * across instances of the same element.
-       * If you’re initializing an array or object, do it in the created callback
-       * rather than directly on the prototype.
-       *
-       */
-      init: function() {
-        this.tick = 0; // for sorting
-        this.clickedColNumber = undefined; // for sorting
-
-        this.dataStructure = {
-          tbody: undefined,
-          theadTr: undefined,
-          headArray: [],
-          bodyArray: []
-        };
-
-        var table = document.createElement('table'),
-          thead = document.createElement('thead'),
-          theadTr = document.createElement('tr'),
-          tbody = document.createElement('tbody'),
-          tfoot = document.createElement('tfoot');
-
-        thead.appendChild(theadTr);
-        table.appendChild(thead);
-        table.appendChild(tbody);
-        table.appendChild(tfoot);
-
-        this.dataStructure.tbody = tbody;
-        this.dataStructure.theadTr = theadTr;
+      tick: {
+        type: Number,
+        value: 0
       },
+      clickedColNumber: {
+        type: Number,
+        value: undefined
+      },
+      tableHead: {
+        type: Array,
+        value: []
+      },
+      tableBody: {
+        type: Array,
+        value: []
+      }
+    },
 
-      /* Transforms input data to valid table structure */
-      parseData: function(input) {
-        if(input) {
-          if(!Array.isArray(input)) {
-            var csvRaw = input.split('\n');
-            // remove empty elements
-            var csv = csvRaw.filter(function(el) {
-              return !!el;
-            });
+    ready: function() {
+      this.init();
+      this.initSort();
+    },
 
-            var csvLength = csv.length;
-            if(csvLength > 1) {
-              this.dataStructure.headArray = csv[0].split(this.separator);
-              this.dataStructure.bodyArray = [];
-              var rowsCnt = csvLength - 1;
-              var colsCnt = this.dataStructure.headArray.length;
+    dataChanged: function() {
+      if (this.data) {
+        this.clearSortClasses();
+        this.parseData(this.data);
+      }
+    },
 
-              for(var i = 1; i <= rowsCnt; i++) {
-                this.dataStructure.bodyArray[i] = csv[i].split(this.separator);
-                if(this.dataStructure.bodyArray[i].length < colsCnt) {
-                  // fill cells with empty strings if thead has more cols than tbody
-                  for(var j = this.dataStructure.bodyArray[i].length; j < colsCnt; j++) {
-                    this.dataStructure.bodyArray[i][j] = '';
-                  }
-                }
-                else {
-                  // cut extra cells if tbody has more cols than thead
-                  this.dataStructure.bodyArray[i].length = colsCnt;
-                }
-              }
-              this.dataStructure.bodyArray.splice(0, 1);
-            }
-          }
-          else {
-            /*
-             for array in the format of d3.js parsed csv (array of maps):
-             0: Object
-             IRGEX: "1"
-             IRGIM: "18"
-             Summer: "0.82"
-             Winter: "0.82"
-             1: Object
-             IRGEX: "1"
-             IRGIM: "33"
-             Summer: "0.28"
-             Winter: "0.28"
-             etc.
-             */
-            this.dataStructure.bodyArray = [];
-            this.dataStructure.headArray = [];
-            for(i in input) {
-              var row = input[i];
-              //var j = 0;
-              var rowArray = [];
-              for(key in row) {
-                if(i == 0) {
-                  this.dataStructure.headArray.push(key);
-                }
-                //this.dataStructure.bodyArray.
-                //j++;
-                rowArray.push(row[key]);
-              }
-              this.dataStructure.bodyArray.push(rowArray);
-            }
-          }
+    /* Sort data */
+    sortData: function(colNumber, reverse) {
+      reverse = -((+reverse) || -1); // bool to int
+      var tableBody = this.tableBody.slice(0);
+      tableBody.sort(function(a, b) {
+        return reverse * ((a[colNumber]).localeCompare(b[colNumber]));
+      });
+      this.tableBody = tableBody;
+    },
+
+    /* Clear asc/desc classes */
+    clearSortClasses: function() {
+      var tHeadTh = Polymer.dom(this.root).querySelectorAll('thead th');
+      var tHeadThLength = tHeadTh.length;
+
+      if (tHeadThLength) {
+        for (var i = 0; i < tHeadThLength; i++) {
+          tHeadTh[i].className = '';
         }
       }
-    });
-  </script>
-</polymer-element>
+    },
+
+    /* Init sorting. Add events and find sort order */
+    initSort: function() {
+      var tHead = Polymer.dom(this.root).querySelector('thead');
+      var eventCallback = function(node) {
+        /* find which cell was clicked */
+        var colNumber;
+        var childs = node.parentNode.querySelectorAll(this.theadCell);
+        var childsLength = childs.length;
+
+        for (var i = 0; i < childsLength; i++) {
+          if (node == childs[i]) {
+            colNumber = i;
+          }
+          childs[i].className = '';
+        }
+
+        if (this.clickedColNumber === colNumber) {
+          this.tick = 0;
+          this.clickedColNumber = null;
+
+        } else {
+          this.tick = 1;
+          this.clickedColNumber = colNumber;
+        }
+        node.className = (this.tick % 2) ? this.sortDescClass : this.sortAscClass;
+        this.sortData(colNumber, this.tick % 2);
+      }.bind(this);
+
+      tHead.addEventListener('click', function(e) {
+        eventCallback(e.target);
+        e.preventDefault();
+      });
+    },
+
+    init: function() {
+      this.separator = this.separator || ',';
+    },
+
+    /* Transforms input data to valid table structure */
+    parseData: function(input) {
+      if (input) {
+        var tableHead = [];
+        var tableBody = [];
+
+        if (!Array.isArray(input)) {
+          var csvRaw = input.split('\n');
+          // remove empty elements
+          var csv = csvRaw.filter(function(el) {
+            return !!el;
+          });
+
+          var csvLength = csv.length;
+          if (csvLength > 1) {
+            tableHead = csv[0].split(this.separator);
+            var rowsCnt = csvLength - 1;
+            var colsCnt = tableHead.length;
+
+            for (var i = 1; i <= rowsCnt; i++) {
+              tableBody[i] = csv[i].split(this.separator);
+
+              if (tableBody[i].length < colsCnt) {
+                // fill cells with empty strings if thead has more cols than tbody
+                for (var j = tableBody[i].length; j < colsCnt; j++) {
+                  tableBody[i][j] = '';
+                }
+              }
+              else {
+                // cut extra cells if tbody has more cols than thead
+                tableBody[i].length = colsCnt;
+              }
+            }
+            tableBody.splice(0, 1);
+            this.tableBody = tableBody;
+            this.tableHead = tableHead;
+          }
+        }
+        else {
+          /*
+           for array in the format of d3.js parsed csv (array of maps):
+           0: Object
+           IRGEX: "1"
+           IRGIM: "18"
+           Summer: "0.82"
+           Winter: "0.82"
+           1: Object
+           IRGEX: "1"
+           IRGIM: "33"
+           Summer: "0.28"
+           Winter: "0.28"
+           etc.
+           */
+          for (var i = 0, size = input.length; i < size; i++) {
+            var row = input[i];
+            var rowArray = [];
+            for (var key in row) {
+              if (row.hasOwnProperty(key)) {
+                if (i === 0) {
+                  tableHead.push(key);
+                }
+                rowArray.push(row[key]);
+              }
+            }
+            tableBody.push(rowArray);
+          }
+          this.tableBody = tableBody;
+          this.tableHead = tableHead;
+        }
+      }
+    }
+  });
+</script>

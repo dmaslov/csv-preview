@@ -9,10 +9,11 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "wct.conf.js",
+    ".jshintrc",
+    ".jscs.json"
   ],
   "dependencies": {
-    "csv-preview": "csv-preview#1.2.5"
+    "csv-preview": "csv-preview#1.3.0"
   }
 }
