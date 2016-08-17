@@ -104,8 +104,9 @@
         clickTarget.click.apply(clickTarget);
         flush(function() {
           var firstRowFirstCellHtml = csvPreview.querySelector('tbody > tr > td').innerHTML;
+          var classListArray = Array.from(clickTarget.classList);
 
-          expect(clickTarget.className).to.be.equal(csvPreview.sortDescClass);
+          expect(classListArray).to.contain(csvPreview.sortDescClass);
           expect(csvPreview.tableBody[0][0]).to.be.equal(lastRowFirstCellVal);
           expect(csvPreview.tableBody[csvRowsCnt - 1][0]).to.be.equal(firstRowFirstCellVal);
           expect(firstRowFirstCellHtml).to.be.equal(lastRowFirstCellVal);
@@ -114,8 +115,9 @@
           clickTarget.click.apply(clickTarget);
           flush(function() {
             var firstRowFirstCellHtml = csvPreview.querySelector('tbody > tr > td').innerHTML;
+            var classListArray = Array.from(clickTarget.classList);
 
-            expect(clickTarget.className).to.be.equal(csvPreview.sortAscClass);
+            expect(classListArray).to.contain(csvPreview.sortAscClass);
             expect(csvPreview.tableBody[0][0]).to.be.equal(firstRowFirstCellVal);
             expect(csvPreview.tableBody[csvRowsCnt - 1][0]).to.be.equal(lastRowFirstCellVal);
             expect(firstRowFirstCellHtml).to.be.equal(firstRowFirstCellVal);
