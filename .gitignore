@@ -1,5 +1,3 @@
 node_modules
 bower_components
-wct.conf.js
-.jshintrc
-.jscs.json
+wct.conf.json

@@ -10,29 +10,25 @@
         width: 50%;
         margin: 0 auto;
         border-collapse: collapse;
+        text-align: left;
       }
 
-      table > thead > tr > th,
-      table > thead > tr > td {
+      thead {
         background: #f8f0f0;
         cursor: pointer;
       }
 
-      table > thead > tr > th,
-      table > thead > tr > td,
-      table > tbody > tr > td,
-      table > tfoot > tr > td {
+      th,
+      td {
         padding: 8px;
         vertical-align: top;
         border: 1px solid #ddd;
       }
 
-      table > thead > tr > th,
-      table > thead > tr > td {
+      thead th,
+      thead td {
         vertical-align: bottom;
         border-bottom: 2px solid #ddd;
-        text-align: left;
-
         /* prevent select text when doubleclick */
         -webkit-user-select: none;
         -khtml-user-select: none;
@@ -41,25 +37,25 @@
         user-select: none;
       }
 
-      table > thead > tr > th::after,
-      table > thead > tr > td::after {
+      thead th::after,
+      thead td::after{
+        font-size: 10px;
+        margin-left: 5px;
+      }
+
+      thead th::after,
+      thead td::after {
         content: '▼▲';
-        font-size: 10px;
-        margin-left: 5px;
       }
 
-      table > thead > tr > th.asc::after,
-      table > thead > tr > td.asc::after {
+      th.asc::after,
+      td.asc::after {
         content: '▲';
-        font-size: 10px;
-        margin-left: 5px;
       }
 
-      table > thead > tr > th.desc::after,
-      table > thead > tr > td.desc::after {
+      th.desc::after,
+      td.desc::after {
         content: '▼';
-        font-size: 10px;
-        margin-left: 5px;
       }
     </style>
 
@@ -155,7 +151,7 @@
 
       if (tHeadThLength) {
         for (var i = 0; i < tHeadThLength; i++) {
-          tHeadTh[i].className = '';
+          tHeadTh[i].classList.remove(this.sortDescClass, this.sortAscClass);
         }
       }
     },
@@ -173,7 +169,7 @@
           if (node == childs[i]) {
             colNumber = i;
           }
-          childs[i].className = '';
+          childs[i].classList.remove(this.sortDescClass, this.sortAscClass);
         }
 
         if (this.clickedColNumber === colNumber) {
@@ -184,7 +180,10 @@
           this.tick = 1;
           this.clickedColNumber = colNumber;
         }
-        node.className = (this.tick % 2) ? this.sortDescClass : this.sortAscClass;
+
+        var sortClass = (this.tick % 2) ? this.sortDescClass : this.sortAscClass;
+        node.classList.add(sortClass);
+
         this.sortData(colNumber, this.tick % 2);
       }.bind(this);
 

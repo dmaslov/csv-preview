@@ -1,17 +1,12 @@
 language: node_js
-node_js:
-  - "0.10"
-
+node_js: stable
 before_script:
-  - npm install -g web-component-tester
-  - npm install -g bower
+  - npm install -g bower web-component-tester
   - bower install
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
 script:
   - wct
-
 notifications:
-  email:
-    - maslov.dmitrij@gmail.com
+  email: maslov.dmitrij@gmail.com

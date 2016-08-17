@@ -73,10 +73,8 @@
 
     it('should init correctly without data', function(done) {
       flush(function() {
-        expect(csvPreview.querySelector('style')).not.to.be.empty;
         expect(csvPreview.querySelector('table')).not.to.be.empty;
         expect(csvPreview.separator).to.be.equal(',');
-
         expect(csvPreview.data).to.be.empty;
         expect(csvPreview.tableHead).to.be.empty;
         expect(csvPreview.tableBody).to.be.empty;
