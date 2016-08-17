@@ -12,6 +12,6 @@
     "wct.conf.json"
   ],
   "dependencies": {
-    "csv-preview": "csv-preview#1.3.2"
+    "csv-preview": "csv-preview#1.3.3"
   }
 }
