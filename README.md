@@ -4,7 +4,7 @@ A [Polymer](http://polymer-project.org) element to preview csv data and structur
 
 ## Demo
 
-> [Check it live](http://dmaslov.github.io/csv-preview).
+> [Check it live](https://rawgit.com/karlgroves/csv-preview/accessible/example/index.html).
 
 ## Installation
 
